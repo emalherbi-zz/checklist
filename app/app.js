@@ -4,10 +4,10 @@
 angular.module('myApp', [
   'ngRoute',
   'ui.bootstrap',
-  'myApp.view1',
-  'myApp.view2',
+  'myApp.checklist',
+  'myApp.configuration',
   'myApp.version'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.otherwise({redirectTo: '/checklist'});
 }]);
