@@ -5,7 +5,7 @@ angular.module('myApp', [
   'ngRoute',
   'ui.bootstrap',
   'myApp.checklist',
-  'myApp.configuration',
+  'myApp.anteriores',
   'myApp.version'
 ]).
 config(['$routeProvider', function($routeProvider) {

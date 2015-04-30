@@ -10,90 +10,136 @@ angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap'])
 }])
 
 .controller('CheckListCtrl', ['$scope', '$http', '$modal', '$log', function($scope, $http, $modal, $log) {
-  var todoList = this;
-  todoList.todos = [];
+  var checklist = this;
+  checklist.checklist = {
+    'title' : checklist.title = '',
+    'itens' : checklist.itens = []
+  };
 
-  var httpPost = function() {
-    $http.post('checklist.php?m=save', JSON.stringify(todoList.todos)).error(function(status) {
-      // console.log(status);
+  var httpPost = function(n) {
+    n = (n) ? true : false;
+    $http.post('partials/checklist/checklist.php?m=save&n='+n, JSON.stringify(checklist.checklist)).error(function(status) {
+      $log.info(status);
     });
   };
-  var httpServer = function() {
-    return $http.get('checklist.php?m=get').success(function(response) {
-      todoList.todos = response;
+  var httpGet = function() {
+    return $http.get('partials/checklist/checklist.php?m=get').success(function(response) {
+      if (response) {
+        checklist.title = response.title;
+        checklist.itens = response.itens;
+      }
     }).error(function(status) {
-      // console.log(status);
+      $log.info(status);
     });
-    // return $http.get('storage.txt').success(function(response) {
-    //   todoList.todos = response;
-    // }).error(function(status) {
-    //   // console.log(status);
-    // });
   };
 
-  httpServer();
+  httpGet();
 
-  todoList.open = function (idx) {
+  checklist.open = function (type, idx) {
     var modalInstance = $modal.open({
-      templateUrl: 'myModal.html',
-      controller: 'ModalCtrl'
+      templateUrl: 'Modal.html',
+      controller: 'ModalCtrl',
+      resolve : {
+        modaltitle : function() {
+          if (type === 'add') {
+            return 'Novo';
+          } else if (type === 'edit') {
+            return 'Editar';
+          } else {
+            return 'Salvar';
+          }
+        },
+        modalholder : function() {
+          if (type === 'add') {
+            return 'Informe aqui o novo item!';
+          } else if (type === 'edit') {
+            return checklist.itens[idx].item;
+          } else {
+            return 'Informe o nome do arquivo!';
+          }
+        }
+      }
     });
 
-    modalInstance.result.then(function (item) {
-      todoList.addItem(idx, item);
+    modalInstance.result.then(function(item) {
+      if (type === 'add') {
+        checklist.addItem(item);
+      } else if (type === 'edit') {
+        checklist.addItem(item, idx);
+      } else {
+        checklist.saveList(item);
+      }
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
 
-  todoList.addItem = function(idx, item) {
-    if (idx) {
-      todoList.todos[idx].text = item;
-    } else {
-      todoList.todos.push({ text:item, done:false });
-    }
-
-    httpPost();
+  checklist.saveList = function(item) {
+    checklist.checklist.title = item;
+    checklist.checklist.itens = checklist.itens;
+    httpPost(true);
   };
 
-  todoList.remaining = function() {
+  checklist.addItem = function(item, idx) {
+    if (typeof idx !== 'undefined') {
+      checklist.itens[idx].item = item;
+    } else {
+      checklist.itens.push({ item : item, done : false });
+    }
+    checklist.checklist.itens = checklist.itens;
+    httpPost(false);
+  };
+
+  checklist.remaining = function() {
     var count = 0;
-    angular.forEach(todoList.todos, function(todo) {
+    angular.forEach(checklist.itens, function(todo) {
       count += todo.done ? 0 : 1;
     });
     return count;
   };
 
-  todoList.archive = function() {
-    var oldTodos = todoList.todos;
-    todoList.todos = [];
-    angular.forEach(oldTodos, function(todo) {
-      if (!todo.done) todoList.todos.push(todo);
+  checklist.archive = function() {
+    var olditens = checklist.itens;
+    checklist.itens = [];
+    angular.forEach(olditens, function(item) {
+      if (!item.done) checklist.itens.push(item);
     });
   };
 
-  todoList.delete = function ( idx ) {
-    var rusure = confirm("Are you sure you want to remove the task from the list?" + idx);
-    if(rusure) {
-      todoList.todos.splice(idx, 1);
+  checklist.delete = function ( idx ) {
+    var del = confirm("Deseja deletar esse item?");
+    if (del) {
+      checklist.itens.splice(idx, 1);
       httpPost();
     }
   };
 
-  todoList.edit = function ( idx ) {
-    todoList.open(idx);
+  checklist.edit = function ( idx ) {
+    checklist.open('edit', idx);
   };
 
-  todoList.add = function () {
-    todoList.open();
+  checklist.add = function () {
+    checklist.open('add');
   };
 
+  checklist.save = function () {
+    checklist.open('save');
+  };
 }])
 
-.controller('ModalCtrl', function ($scope, $modalInstance) {
+.controller('ModalCtrl', function ($scope, $modalInstance, modaltitle, modalholder) {
+
+  $scope.modaltitle  = modaltitle;
+  $scope.modalholder = modalholder;
+  $scope.modalitem   = '';
+  $scope.modalhelp   = '';
 
   $scope.ok = function () {
-    $modalInstance.close($scope.item);
+    if ($scope.modalitem) {
+      $modalInstance.close($scope.modalitem);
+    } else {
+      $scope.modalhelp = 'Favor inserir um nome!';
+    }
   };
 
   $scope.cancel = function () {

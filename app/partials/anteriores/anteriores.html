@@ -1,0 +1,52 @@
+<div id="anteriores" ng-controller="AnterioresCtrl as anteriores" >
+  <div class="masthead">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Anteriores</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding-bottom:15px;padding-top:15px;margin-bottom:0;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <div ng-repeat="f in anteriores.files track by $index" >
+              <table class="table table-condensed table-striped table-bordered">
+                <tbody>
+                  <tr>
+                    <td><label>{{f.contents.title}}</label></td>
+                    <td width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="anteriores.details($index)" ><i class="glyphicon glyphicon glyphicon-th-list"></i></button></td>
+                    <td width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="anteriores.save($index)" ><i class="glyphicon glyphicon-download-alt"></i></button></td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" id="table-details-{{$index}}" ng-show="anteriores.details == true" >
+                      <table class="table table-condensed table-striped table-bordered" >
+                        <thead>
+                          <tr>
+                            <th>Descrição</th>
+                            <th width="5%"><i class="glyphicon glyphicon-pencil"></i></th>
+                            <th width="5%"><i class="glyphicon glyphicon-trash"></i></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="item in f.contents.itens track by $index" >
+                            <td><span class="done-{{item.done}}"> {{item.item}}</span></td>
+                            <td><button type="button" class="btn btn-sm btn-info" data-ng-click="anteriores.edit($index)" ><i class="glyphicon glyphicon-pencil"></i></button></td>
+                            <td><button type="button" class="btn btn-sm btn-info" data-ng-click="anteriores.delete($index)" ><i class="glyphicon glyphicon-trash"></i></button></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

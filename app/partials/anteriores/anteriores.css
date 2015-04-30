@@ -1,0 +1,11 @@
+#anteriores table > thead > tr > th:nth-child(1),
+#anteriores table > tbody > tr > td:nth-child(1),
+#anteriores table > thead > tr > th:nth-child(2),
+#anteriores table > tbody > tr > td:nth-child(2),
+#anteriores table > thead > tr > th:nth-child(3),
+#anteriores table > tbody > tr > td:nth-child(3) {
+  text-align: center;
+}
+#anteriores .bg-gray h1 {
+  background-color: #CCC;
+}
