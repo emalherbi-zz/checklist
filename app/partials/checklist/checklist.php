@@ -7,47 +7,44 @@ defined("DS") || define("DS", DIRECTORY_SEPARATOR);
 defined("ROOT") || define("ROOT", dirname(dirname(dirname(__FILE__))));
 
 $path = ROOT . DS . 'checklist';
-$file = 'default.txt';
-$filepath = "{$path}" . DS . "{$file}";
 
 @mkdir("{$path}", 0777, true);
 @chmod("{$path}", 0777);
 
 if (isset($_GET) && ($_GET['m'] == 'save')) {
-  $data = file_get_contents("php://input");
+  try {
+    $files = json_decode(file_get_contents("php://input"));
+    $file  = $files[0]->file;
 
-  $myfile = fopen("{$filepath}", "w") or die("Unable to open file!");
-  fwrite($myfile, $data);
-  fclose($myfile);
+    $filepath = "{$path}/{$file}";
+    $f = fopen("{$filepath}", "w");
+    fwrite($f, json_encode($files[0]->contents));
+    fclose($f);
 
-  if ($_GET['n'] == "true") {
-    $myfile = fopen("{$path}/checklist_" . date('Y_m_d_H_i_s') . "_" . rand(10, 5000) . ".txt", "w") or die("Unable to open file!");
-    fwrite($myfile, $data);
-    fclose($myfile);
+    echo true;
+  } catch (Exception $e) {
+    echo false;
   }
 }
-elseif (isset($_GET) && ($_GET['m'] == 'get')) {
+elseif (isset($_GET) && ($_GET['m'] == 'all')) {
+
+  $itens = array();
   if ($handle = @opendir("{$path}")) {
-    if (is_file($filepath)) {
-      echo file_get_contents($filepath);
-    }
-  }
+    while (false !== ($file = readdir($handle))) {
+      $filepath = "{$path}/{$file}";
 
-  /*
-  if ($handle = @opendir("{$path}")) {
-    $time = 0;
-    $file = '';
+      if (is_file($filepath)) {
+        $item = new stdClass();
+        $item->file = $file;
+        $item->contents = json_decode(file_get_contents("{$filepath}"));
 
-    while (false !== ($entry = readdir($handle))) {
-      $filepath = "{$path}/{$entry}";
-
-      if (is_file($filepath) && filectime($filepath) > $time) {
-        $time = filectime($filepath);
-        $file = $entry;
+        if ($item->contents->use=="true") {
+          $itens[] = $item;
+        }
       }
     }
     closedir($handle);
-    echo file_get_contents("{$path}/{$file}");
   }
-  */
+  echo json_encode($itens);
+
 }

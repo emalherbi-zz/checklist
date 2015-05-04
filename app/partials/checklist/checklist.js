@@ -1,144 +1,118 @@
 'use strict';
 
-angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap'])
+angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/checklist', {
     templateUrl: 'partials/checklist/checklist.html',
-    controller: 'CheckListCtrl'
+    controller: 'ChecklistCtrl'
   });
 }])
 
-.controller('CheckListCtrl', ['$scope', '$http', '$modal', '$log', function($scope, $http, $modal, $log) {
+.factory('HttpChecklist', ['$http', function($http) {
+  return {
+    all : function() {
+      return $http.get('partials/checklist/checklist.php?m=all').then(function (response) {
+        return response.data;
+      });
+    },
+    save : function(files) {
+      return $http.post('partials/checklist/checklist.php?m=save', JSON.stringify(files)).then(function (response) {
+        return response.data;
+      });
+    }
+  };
+}])
+
+.controller('ChecklistCtrl', ['$scope', '$modal', '$log', 'HttpChecklist', function($scope, $modal, $log, HttpChecklist) {
   var checklist = this;
-  checklist.checklist = {
-    'title' : checklist.title = '',
-    'itens' : checklist.itens = []
-  };
+  checklist.files = {};
 
-  var httpPost = function(n) {
-    n = (n) ? true : false;
-    $http.post('partials/checklist/checklist.php?m=save&n='+n, JSON.stringify(checklist.checklist)).error(function(status) {
-      $log.info(status);
-    });
-  };
-  var httpGet = function() {
-    return $http.get('partials/checklist/checklist.php?m=get').success(function(response) {
-      if (response) {
-        checklist.title = response.title;
-        checklist.itens = response.itens;
-      }
-    }).error(function(status) {
-      $log.info(status);
+  HttpChecklist.all().then(function(data) {
+    checklist.files = data;
+  });
+
+  var commit = function() {
+    HttpChecklist.save(checklist.files).then(function(data) {
+      $log.info(data);
     });
   };
 
-  httpGet();
-
-  checklist.open = function (type, idx) {
+  checklist.modal = function (type, idx) {
     var modalInstance = $modal.open({
-      templateUrl: 'Modal.html',
-      controller: 'ModalCtrl',
+      templateUrl: 'ModalChecklist.html',
+      controller: 'ModalChecklistCtrl',
       resolve : {
-        modaltitle : function() {
-          if (type === 'add') {
-            return 'Novo';
-          } else if (type === 'edit') {
-            return 'Editar';
-          } else {
-            return 'Salvar';
-          }
+        title : function() {
+          return (type === 'add') ? 'Novo' : 'Editar';
         },
-        modalholder : function() {
-          if (type === 'add') {
-            return 'Informe aqui o novo item!';
-          } else if (type === 'edit') {
-            return checklist.itens[idx].item;
-          } else {
-            return 'Informe o nome do arquivo!';
-          }
+        placeholder : function() {
+          return (type === 'add') ? 'Informe aqui o novo item!' : checklist.files[0].contents.itens[idx].item;
         }
       }
     });
 
     modalInstance.result.then(function(item) {
-      if (type === 'add') {
-        checklist.addItem(item);
-      } else if (type === 'edit') {
-        checklist.addItem(item, idx);
-      } else {
-        checklist.saveList(item);
-      }
+      (type === 'add') ? checklist.addItem(item) : checklist.addItem(item, idx);
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
 
-  checklist.saveList = function(item) {
-    checklist.checklist.title = item;
-    checklist.checklist.itens = checklist.itens;
-    httpPost(true);
-  };
-
   checklist.addItem = function(item, idx) {
     if (typeof idx !== 'undefined') {
-      checklist.itens[idx].item = item;
+      checklist.files[0].contents.itens[idx].item = item;
     } else {
-      checklist.itens.push({ item : item, done : false });
+      checklist.files[0].contents.itens.push({ item : item, done : false });
     }
-    checklist.checklist.itens = checklist.itens;
-    httpPost(false);
+    commit();
+  };
+
+  checklist.delete = function ( idx ) {
+    if (confirm("Deseja deletar esse item?")) {
+      checklist.files[0].contents.itens.splice(idx, 1);
+      commit();
+    }
+  };
+
+  checklist.edit = function (idx) {
+    checklist.modal('edit', idx);
+  };
+
+  checklist.add = function () {
+    checklist.modal('add');
+  };
+
+  checklist.done = function () {
+    commit();
   };
 
   checklist.remaining = function() {
     var count = 0;
-    angular.forEach(checklist.itens, function(todo) {
-      count += todo.done ? 0 : 1;
+    angular.forEach(checklist.files[0].contents.itens, function(itens) {
+      count += itens.done ? 0 : 1;
     });
     return count;
   };
 
-  checklist.archive = function() {
-    var olditens = checklist.itens;
-    checklist.itens = [];
-    angular.forEach(olditens, function(item) {
-      if (!item.done) checklist.itens.push(item);
-    });
+  checklist.copy = function() {
+    return $scope.copy;
   };
 
-  checklist.delete = function ( idx ) {
-    var del = confirm("Deseja deletar esse item?");
-    if (del) {
-      checklist.itens.splice(idx, 1);
-      httpPost();
-    }
-  };
-
-  checklist.edit = function ( idx ) {
-    checklist.open('edit', idx);
-  };
-
-  checklist.add = function () {
-    checklist.open('add');
-  };
-
-  checklist.save = function () {
-    checklist.open('save');
-  };
 }])
 
-.controller('ModalCtrl', function ($scope, $modalInstance, modaltitle, modalholder) {
+.controller('ModalChecklistCtrl', function ($scope, $modalInstance, title, placeholder) {
 
-  $scope.modaltitle  = modaltitle;
-  $scope.modalholder = modalholder;
-  $scope.modalitem   = '';
-  $scope.modalhelp   = '';
+  $scope.title  = title;
+  $scope.placeholder = placeholder;
+  $scope.item = '';
+  $scope.help = '';
 
   $scope.ok = function () {
-    if ($scope.modalitem) {
-      $modalInstance.close($scope.modalitem);
+    if ($scope.item) {
+      $modalInstance.close($scope.item);
     } else {
-      $scope.modalhelp = 'Favor inserir um nome!';
+      $scope.help = 'Favor inserir um nome!';
     }
   };
 
@@ -146,4 +120,8 @@ angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap'])
     $modalInstance.dismiss('cancel');
   };
 
-});
+})
+
+.config(['ngClipProvider', function(ngClipProvider) {
+  ngClipProvider.setPath("bower_components/zeroclipboard/dist/ZeroClipboard.swf");
+}]);

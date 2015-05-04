@@ -26,16 +26,36 @@ if (isset($_GET) && ($_GET['m'] == 'all')) {
     }
     closedir($handle);
   }
+  sort($itens);
   echo json_encode($itens);
 
 } elseif (isset($_GET) && ($_GET['m'] == 'create')) {
 
   try {
+    if ($handle = @opendir("{$path}")) {
+      while (false !== ($file = readdir($handle))) {
+        $filepath = "{$path}/{$file}";
+
+        if (is_file($filepath)) {
+          $contents = file_get_contents("{$filepath}");
+          $contents = json_decode($contents);
+          $contents->use = "false";
+          $contents = json_encode($contents);
+
+          $file = fopen("{$filepath}", "w");
+          fwrite($file, $contents);
+          fclose($file);
+        }
+      }
+      closedir($handle);
+    }
+
     $name = $_GET['f'];
-    $nameFile = str_replace(' ', '-', strtolower($name));
+    $nameFile = str_replace(',', '', strtolower($name));
+    $nameFile = str_replace(' ', '-', strtolower($nameFile));
 
     $file = fopen("{$path}/$nameFile.txt", "w");
-    fwrite($file, '{"title":"'.$name.'","use": "false","itens":[]}');
+    fwrite($file, '{"title":"'.$name.'","use": "true","itens":[]}');
     fclose($file);
 
     echo true;
@@ -46,8 +66,25 @@ if (isset($_GET) && ($_GET['m'] == 'all')) {
 } elseif (isset($_GET) && ($_GET['m'] == 'use')) {
 
   try {
-    $name = $_GET['f'];
+    if ($handle = @opendir("{$path}")) {
+      while (false !== ($file = readdir($handle))) {
+        $filepath = "{$path}/{$file}";
 
+        if (is_file($filepath)) {
+          $contents = file_get_contents("{$filepath}");
+          $contents = json_decode($contents);
+          $contents->use = "false";
+          $contents = json_encode($contents);
+
+          $file = fopen("{$filepath}", "w");
+          fwrite($file, $contents);
+          fclose($file);
+        }
+      }
+      closedir($handle);
+    }
+
+    $name = $_GET['f'];
     $contents = file_get_contents("{$path}/$name");
     $contents = json_decode($contents);
     $contents->use = "true";

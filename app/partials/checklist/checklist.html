@@ -1,64 +1,68 @@
-<div id="checklist" ng-controller="CheckListCtrl as checklist" >
-  <div class="masthead">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <h1>Checklist</h1>
-          <h3>{{checklist.remaining()}} de {{checklist.itens.length}} remanescente [ <a href="" ng-click="checklist.archive()">arquivar</a> ][ <a href="" ng-click="checklist.add()">adicionar</a> ]</h3>
+<div id="checklist" ng-controller="ChecklistCtrl as checklist" >
+  <div ng-repeat="f in checklist.files track by $index" >
+    <div class="masthead">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1>Checklist</h1>
+            <h3>{{checklist.remaining()}} de {{f.contents.itens.length}} remanescente [ <a href="" ng-click="checklist.add()">adicionar</a> ]</h3>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div style="padding-bottom:15px;padding-top:15px;margin-bottom:0;">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-7">
-          <h2>{{ checklist.title }}</h2>
-          <div class="table-responsive">
-            <table class="table table-condensed table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th><i class="glyphicon glyphicon-ok"></i></th>
-                  <th>Descrição</th>
-                  <th width="5%"><i class="glyphicon glyphicon-pencil"></i></th>
-                  <th width="5%"><i class="glyphicon glyphicon-trash"></i></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="item in checklist.itens track by $index" >
-                  <td><input type="checkbox" ng-model="item.done"></td>
-                  <td><span class="done-{{item.done}}"> {{item.item}}</span></td>
-                  <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.edit($index)" ><i class="glyphicon glyphicon-pencil"></i></button></td>
-                  <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.delete($index)" ><i class="glyphicon glyphicon-trash"></i></button></td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="4"><button type="button" class="btn btn-info pull-right" data-ng-click="checklist.save()" ><i class="glyphicon glyphicon-download-alt"> </i>&nbsp;&nbsp;Salvar</button></td>
-                </tr>
-              </tfoot>
-            </table>
+    <div style="padding-bottom:15px;padding-top:15px;margin-bottom:0;">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-7">
+            <h2>{{ f.contents.title }}</h2>
+            <div class="table-responsive">
+              <table class="table table-condensed table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th width="5%"><i class="glyphicon glyphicon-ok"></i></th>
+                    <th>Descrição</th>
+                    <th width="5%"><i class="glyphicon glyphicon-pencil"></i></th>
+                    <th width="5%"><i class="glyphicon glyphicon-trash"></i></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="item in f.contents.itens track by $index" >
+                    <td><input type="checkbox" ng-model="item.done" ng-change="checklist.done()" ></td>
+                    <td><span class="done-{{item.done}}"> {{item.item}}</span></td>
+                    <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.edit($index)" ><i class="glyphicon glyphicon-pencil"></i></button></td>
+                    <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.delete($index)" ><i class="glyphicon glyphicon-trash"></i></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-        <div class="col-md-5" >
-          <h5>Os seguinte itens encontram em descordo com o especificado.</h5>
-          <ol>
-            <li ng-repeat="item in checklist.itens track by $index" class="checklist-{{item.done}}" >
-              <span>{{item.item}}</span>
-            </li>
-          </ol>
+          <div class="col-md-5">
+            <div ng-if="checklist.remaining() > 0">
+              <h3>Os seguinte itens encontram em descordo com o especificado.</h3>
+              <ol>
+                <li ng-repeat="item in f.contents.itens track by $index" class="checklist-{{item.done}}" >
+                  <span>{{item.item}}</span>
+                </li>
+              </ol>
+            </div>
+            <div ng-if="checklist.remaining() == 0">
+              <h3>Nenhuma divergência encontrada!</h3>
+            </div>
+            <hr>
+            <button type="button" class="btn btn-sm btn-info" clip-copy="checklist.copy()" ><i class="glyphicon glyphicon-copy"></i>&nbsp;&nbsp;Copiar</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script type="text/ng-template" id="Modal.html">
+  <script type="text/ng-template" id="ModalChecklist.html">
   <div class="modal-header">
-  <h3 class="modal-title">{{ modaltitle }}</h3>
+  <h3 class="modal-title">{{ title }}</h3>
   </div>
   <div class="modal-body">
-  <input type="text" class="form-control" ng-model="modalitem" placeholder="{{modalholder}}" >
-  <p class="help-block">{{ modalhelp }}</p>
+  <input type="text" class="form-control" ng-model="item" placeholder="{{placeholder}}" >
+  <p class="help-block">{{ help }}</p>
   </div>
   <div class="modal-footer">
   <button class="btn btn-primary" ng-click="ok()">OK</button>

@@ -1,1 +1,1 @@
-{"title":"Cadastro Simples","use":"true","itens":[]}
+{"title":"Cadastro Simples","use":"false","itens":[]}

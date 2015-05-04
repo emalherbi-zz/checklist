@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.home', ['ngRoute'])
+angular.module('myApp.home', ['ngRoute', 'ui.bootstrap'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/home', {
@@ -9,7 +9,7 @@ angular.module('myApp.home', ['ngRoute'])
   });
 }])
 
-.factory('service', ['$http', function($http) {
+.factory('HttpHome', ['$http', function($http) {
   return {
     all : function() {
       return $http.get('partials/home/home.php?m=all').then(function (response) {
@@ -29,17 +29,33 @@ angular.module('myApp.home', ['ngRoute'])
   };
 }])
 
-.controller('HomeCtrl', ['$scope', 'service', '$window', '$log', function($scope, service, $window, $log) {
+.controller('HomeCtrl', ['$scope', '$window', '$modal', '$log', 'HttpHome', function($scope, $window, $modal, $log, HttpHome) {
   var home = this;
   home.files = [];
 
-  service.all().then(function(data) {
+  HttpHome.all().then(function(data) {
     home.files = data;
   });
 
   home.create = function() {
-    // falta fazer o modal, para perguntar o nome do arquivo.
-    service.create('Cadastro Simples').then(function(data) {
+    var modalInstance = $modal.open({
+      templateUrl: 'ModalHome.html',
+      controller: 'ModalHomeCtrl'
+    });
+
+    modalInstance.result.then(function(title) {
+      HttpHome.create(title).then(function(data) {
+        if (data) {
+          $window.location.href = '#/checklist';
+        }
+      });
+    }, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  home.use = function(file) {
+    HttpHome.use(file).then(function(data) {
       if (data) {
         $window.location.href = '#/checklist';
       }
@@ -47,13 +63,26 @@ angular.module('myApp.home', ['ngRoute'])
   };
 
   home.details = function(idx) {
-
+    $log.info('Falta Implementar: ' + idx);
   };
 
-  home.use = function(file) {
-    service.use(file).then(function(data) {
-      $log.info(data);
-    });
+}])
+
+.controller('ModalHomeCtrl', function ($scope, $modalInstance) {
+
+  $scope.modalitem = '';
+  $scope.modalhelp = '';
+
+  $scope.ok = function () {
+    if ($scope.modalitem) {
+      $modalInstance.close($scope.modalitem);
+    } else {
+      $scope.modalhelp = 'Favor inserir um nome!';
+    }
   };
 
-}]);
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+
+});
