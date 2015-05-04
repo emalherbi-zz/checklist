@@ -38,18 +38,15 @@
           </div>
           <div class="col-md-5">
             <div ng-if="checklist.remaining() > 0">
-              <h3>Os seguinte itens encontram em descordo com o especificado.</h3>
+              <h3>{{checklist.msg}}</h3>
               <ol>
                 <li ng-repeat="item in f.contents.itens track by $index" class="checklist-{{item.done}}" >
                   <span>{{item.item}}</span>
                 </li>
               </ol>
+              <hr>
+              <button type="button" class="btn btn-sm btn-info" clip-copy="checklist.copy()" ><i class="glyphicon glyphicon-copy"></i>&nbsp;&nbsp;Copiar</button>
             </div>
-            <div ng-if="checklist.remaining() == 0">
-              <h3>Nenhuma divergência encontrada!</h3>
-            </div>
-            <hr>
-            <button type="button" class="btn btn-sm btn-info" clip-copy="checklist.copy()" ><i class="glyphicon glyphicon-copy"></i>&nbsp;&nbsp;Copiar</button>
           </div>
         </div>
       </div>

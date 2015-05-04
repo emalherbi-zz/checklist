@@ -27,6 +27,7 @@ angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 .controller('ChecklistCtrl', ['$scope', '$modal', '$log', 'HttpChecklist', function($scope, $modal, $log, HttpChecklist) {
   var checklist = this;
   checklist.files = {};
+  checklist.msg   = 'Os seguinte itens encontram em descordo com o especificado.';
 
   HttpChecklist.all().then(function(data) {
     checklist.files = data;
@@ -96,7 +97,17 @@ angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
   };
 
   checklist.copy = function() {
-    return $scope.copy;
+    var str = '';
+    var ct  = 1;
+
+    str += checklist.msg + "\n\n";
+    angular.forEach(checklist.files[0].contents.itens, function(itens) {
+      if (!itens.done) {
+        str += ct + ". " + itens.item + "\n";
+        ct++;
+      }
+    });
+    return str;
   };
 
 }])

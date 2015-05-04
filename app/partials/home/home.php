@@ -51,8 +51,7 @@ if (isset($_GET) && ($_GET['m'] == 'all')) {
     }
 
     $name = $_GET['f'];
-    $nameFile = str_replace(',', '', strtolower($name));
-    $nameFile = str_replace(' ', '-', strtolower($nameFile));
+    $nameFile = date('Y_m_d_H_i_s') . "_" . rand();
 
     $file = fopen("{$path}/$nameFile.txt", "w");
     fwrite($file, '{"title":"'.$name.'","use": "true","itens":[]}');

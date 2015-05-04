@@ -62,10 +62,6 @@ angular.module('myApp.home', ['ngRoute', 'ui.bootstrap'])
     });
   };
 
-  home.details = function(idx) {
-    $log.info('Falta Implementar: ' + idx);
-  };
-
 }])
 
 .controller('ModalHomeCtrl', function ($scope, $modalInstance) {
