@@ -16,16 +16,18 @@
           <div ng-if="home.files.length == 0" >
             <h1>Cadastre seus checklist!</h1>
           </div>
-          <div class="table-responsive" ng-if="home.files.length > 0" >
+          <div ng-if="home.files.length > 0" class="table-responsive" >
             <div ng-repeat="f in home.files track by $index" >
               <table class="table table-condensed table-bordered">
                 <tbody>
                   <tr>
-                    <td><h4>{{f.contents.title}}</h4></td>
-                    <td width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.use(f.file)" ><i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;Utilizar</button></td>
+                    <td class="text-center" ><h4>{{f.contents.title}}</h4></td>
+                    <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.use(f.file)" ><i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;Usar</button></td>
+                    <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.duplicate(f.file)" ><i class="glyphicon glyphicon-file"></i>&nbsp;&nbsp;Duplicar</button></td>
+                    <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.delete(f.file)" ><i class="glyphicon glyphicon-trash"></i>&nbsp;&nbsp;Deletar</button></td>
                   </tr>
                   <tr ng-if="f.contents.itens.length > 0" >
-                    <td colspan="2">
+                    <td colspan="4">
                       <table class="table table-condensed table-striped table-bordered" >
                         <thead>
                           <tr>
@@ -41,7 +43,7 @@
                     </td>
                   </tr>
                   <tr ng-if="f.contents.itens.length == 0" >
-                    <td colspan="2">
+                    <td colspan="4">
                       <table class="table table-condensed table-striped table-bordered" >
                         <thead>
                           <tr>

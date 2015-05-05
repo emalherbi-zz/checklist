@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
+angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/checklist', {
@@ -27,7 +27,7 @@ angular.module('myApp.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 .controller('ChecklistCtrl', ['$scope', '$modal', '$log', 'HttpChecklist', function($scope, $modal, $log, HttpChecklist) {
   var checklist = this;
   checklist.files = {};
-  checklist.msg   = 'Os seguinte itens encontram em descordo com o especificado.';
+  checklist.msg   = 'Os seguintes itens encontram em descordo com o especificado.';
 
   HttpChecklist.all().then(function(data) {
     checklist.files = data;

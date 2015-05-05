@@ -98,4 +98,50 @@ if (isset($_GET) && ($_GET['m'] == 'all')) {
     echo false;
   }
 
+} elseif (isset($_GET) && ($_GET['m'] == 'duplicate')) {
+
+  try {
+    if ($handle = @opendir("{$path}")) {
+      while (false !== ($file = readdir($handle))) {
+        $filepath = "{$path}/{$file}";
+
+        if (is_file($filepath)) {
+          $contents = file_get_contents("{$filepath}");
+          $contents = json_decode($contents);
+          $contents->use = "false";
+          $contents = json_encode($contents);
+
+          $file = fopen("{$filepath}", "w");
+          fwrite($file, $contents);
+          fclose($file);
+        }
+      }
+      closedir($handle);
+    }
+
+    $name = $_GET['f'];
+    $contents = file_get_contents("{$path}/$name");
+    $contents = json_decode($contents);
+    $contents->use = "true";
+    $contents = json_encode($contents);
+
+    $nameFile = date('Y_m_d_H_i_s') . "_" . rand();
+    $file = fopen("{$path}/$nameFile.txt", "w");
+    fwrite($file, $contents);
+    fclose($file);
+
+    echo true;
+  } catch (Exception $e) {
+    echo false;
+  }
+
+} elseif (isset($_GET) && ($_GET['m'] == 'delete')) {
+
+  try {
+    $name = $_GET['f'];
+    echo unlink("{$path}/$name");
+  } catch (Exception $e) {
+    echo false;
+  }
+
 }
