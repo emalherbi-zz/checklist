@@ -1,0 +1,20 @@
+#checklist .done-true {
+  text-decoration: line-through;
+  color: grey;
+}
+#checklist .checklist-true {
+  display: none;
+}
+
+#checklist table > thead > tr > th:nth-child(1),
+#checklist table > tbody > tr > td:nth-child(1) {
+  text-align: center;
+}
+#checklist table > thead > tr > th:nth-child(3),
+#checklist table > tbody > tr > td:nth-child(3) {
+  text-align: center;
+}
+#checklist table > thead > tr > th:nth-child(4),
+#checklist table > tbody > tr > td:nth-child(4) {
+  text-align: center;
+}

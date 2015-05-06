@@ -1,0 +1,21 @@
+/* app css stylesheet */
+.masthead {
+  background-color: #003e88;
+  background-image: linear-gradient(to bottom, #003e88 0px, #1397d8 100%);
+  color: #000000;
+  filter: none;
+  height: 9em;
+  margin: -21px 0 0;
+  padding: 5px;
+}
+
+.footer {
+  background-color: #233447;
+  bottom: 0;
+  color: #FFFFFF;
+  height: 70px;
+  left: 0;
+  padding-top: 25px;
+  position: static;
+  width: 100%;
+}

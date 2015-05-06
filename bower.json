@@ -1,0 +1,28 @@
+{
+  "name": "angular-seed",
+  "description": "A starter project for AngularJS",
+  "version": "0.0.0",
+  "homepage": "https://github.com/angular/angular-seed",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "html5-boilerplate": "~4.3.0",
+    "zeroclipboard": "~2.2.0",
+    "ng-clip": "~0.2.6"
+  },
+  "exportsOverride": {
+    "html5-boilerplate": {
+      "css": [
+        "**/normalize.css",
+        "**/main.css"
+      ],
+      "js" : "**/modernizr-2.6.2.min.js"
+    },
+    "ng-clip": {
+      "js": "**/ng-clip.min.js"
+    },
+    "zeroclipboard": {
+      "js": "**/ZeroClipboard.min.js"
+    }
+  }
+}
