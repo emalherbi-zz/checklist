@@ -134,5 +134,5 @@ angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 })
 
 .config(['ngClipProvider', function(ngClipProvider) {
-  ngClipProvider.setPath("bower_components/zeroclipboard/dist/ZeroClipboard.swf");
+  ngClipProvider.setPath("lib/zeroclipboard/swf/ZeroClipboard.swf");
 }]);
