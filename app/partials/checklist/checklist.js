@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
+angular.module('app')
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/checklist', {

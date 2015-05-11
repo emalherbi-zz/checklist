@@ -8,7 +8,8 @@
   "dependencies": {
     "html5-boilerplate": "~4.3.0",
     "zeroclipboard": "~2.2.0",
-    "ng-clip": "~0.2.6"
+    "ng-clip": "~0.2.6",
+    "angular-xeditable": "~0.1.9"
   },
   "exportsOverride": {
     "html5-boilerplate": {
@@ -24,6 +25,10 @@
     "zeroclipboard": {
       "js": "**/ZeroClipboard.min.js",
       "swf": "**/ZeroClipboard.swf"
+    },
+    "xeditable": {
+      "css": "**/xeditable.css",
+      "js": "**/xeditable.js"
     }
   }
 }

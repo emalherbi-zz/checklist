@@ -21,13 +21,13 @@
               <table class="table table-condensed table-bordered">
                 <tbody>
                   <tr>
-                    <td class="text-center" ><h4>{{f.contents.title}}</h4></td>
+                    <td class="text-center" ><h4 editable-text="f.contents.title" onaftersave="alert('dddd')" >{{ f.contents.title || 'empty' }}</h4></td>
                     <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.use(f.file)" ><i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;Usar</button></td>
                     <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.duplicate(f.file)" ><i class="glyphicon glyphicon-file"></i>&nbsp;&nbsp;Duplicar</button></td>
                     <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.delete(f.file)" ><i class="glyphicon glyphicon-trash"></i>&nbsp;&nbsp;Deletar</button></td>
                   </tr>
                   <tr ng-if="f.contents.itens.length > 0" >
-                    <td colspan="4">
+                    <td colspan="5">
                       <table class="table table-condensed table-striped table-bordered" >
                         <thead>
                           <tr>
@@ -43,7 +43,7 @@
                     </td>
                   </tr>
                   <tr ng-if="f.contents.itens.length == 0" >
-                    <td colspan="4">
+                    <td colspan="5">
                       <table class="table table-condensed table-striped table-bordered" >
                         <thead>
                           <tr>

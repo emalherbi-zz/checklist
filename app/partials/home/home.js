@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app.home', ['ngRoute', 'ui.bootstrap'])
+angular.module('app')
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/home', {
@@ -62,6 +62,18 @@ angular.module('app.home', ['ngRoute', 'ui.bootstrap'])
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
+  };
+
+  home.edit = function(idx) {
+    console.log(home.files);
+
+    home.files[idx].contents.title = 'eduardo';
+
+    // HttpHome.use(file).then(function(data) {
+    //   if (data) {
+    //     $window.location.href = '#/checklist';
+    //   }
+    // });
   };
 
   home.use = function(file) {

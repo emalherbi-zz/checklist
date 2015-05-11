@@ -1,1 +1,1 @@
-{"title":"aaaa","use":"true","itens":[{"item":"xxxx","done":false},{"item":"ererere","done":false}]}
+{"title":"aaaa","use":"true","itens":[{"item":"ererere","done":false}]}
