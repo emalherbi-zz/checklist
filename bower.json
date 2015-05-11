@@ -33,7 +33,7 @@
     },
     "components-font-awesome": {
       "css": "**/font-awesome.min.css",
-      "fonts" : [
+      "fonts": [
         "**/fontawesome-webfont.woff",
         "**/fontawesome-webfont.ttf"
       ]
