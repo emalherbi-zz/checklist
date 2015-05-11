@@ -1,51 +1,84 @@
 <div id="checklist" ng-controller="ChecklistCtrl as checklist" >
-  <div ng-repeat="f in checklist.files track by $index" >
+
+  <div ng-if="checklist.files.length == 0" >
     <div class="masthead">
       <div class="container">
         <div class="row">
           <div class="col-md-12">
             <h1>Checklist</h1>
-            <h3>{{checklist.remaining()}} de {{f.contents.itens.length}} remanescente [ <a href="" ng-click="checklist.add()">adicionar</a> ]</h3>
+            <h3><a style="cursor: pointer" href="#/">&larr; voltar</a></h3>
           </div>
         </div>
       </div>
     </div>
-    <div style="padding-bottom:15px;padding-top:15px;margin-bottom:0;">
+    <div style="padding-bottom:15px; padding-top:15px; margin-bottom:0;">
       <div class="container">
         <div class="row">
-          <div class="col-md-7">
-            <h2>{{ f.contents.title }}</h2>
-            <div class="table-responsive">
-              <table class="table table-condensed table-striped table-bordered">
-                <thead>
-                  <tr>
-                    <th width="5%"><i class="glyphicon glyphicon-ok"></i></th>
-                    <th>Descrição</th>
-                    <th width="5%"><i class="glyphicon glyphicon-pencil"></i></th>
-                    <th width="5%"><i class="glyphicon glyphicon-trash"></i></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="item in f.contents.itens track by $index" >
-                    <td><input type="checkbox" ng-model="item.done" ng-change="checklist.done()" ></td>
-                    <td><span class="done-{{item.done}}"> {{item.item}}</span></td>
-                    <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.edit($index)" ><i class="glyphicon glyphicon-pencil"></i></button></td>
-                    <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.delete($index)" ><i class="glyphicon glyphicon-trash"></i></button></td>
-                  </tr>
-                </tbody>
-              </table>
+          <div class="col-md-12">
+            <h1><i>Cadastre seus checklist!</i></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="checklist.files.length > 0" >
+    <div ng-repeat="f in checklist.files track by $index" >
+      <div class="masthead">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <h1>Checklist</h1>
+              <h3>{{ checklist.remaining() }} de {{ f.contents.itens.length }} remanescente [ <a style="cursor: pointer;" ng-click="checklist.add()">adicionar</a> ]</h3>
             </div>
           </div>
-          <div class="col-md-5">
-            <div ng-if="checklist.remaining() > 0">
-              <h3>{{checklist.msg}}</h3>
-              <ol>
-                <li ng-repeat="item in f.contents.itens track by $index" class="checklist-{{item.done}}" >
-                  <span>{{item.item}}</span>
-                </li>
-              </ol>
-              <hr>
-              <button type="button" class="btn btn-sm btn-info" clip-copy="checklist.copy()" ><i class="glyphicon glyphicon-copy"></i>&nbsp;&nbsp;Copiar</button>
+        </div>
+      </div>
+      <div style="padding-bottom: 15px; padding-top: 15px; margin-bottom: 0;">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-7">
+              <h2><i>{{ f.contents.title }}</i><hr/></h2>
+              <div class="table-responsive">
+                <table class="table table-condensed table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th width="5%"><i class="glyphicon glyphicon-ok"></i></th>
+                      <th colspan="3" >Descrição</th>
+                      <!--<th width="5%"><i class="glyphicon glyphicon-pencil"></i></th>
+                      <th width="5%"><i class="glyphicon glyphicon-trash"></i></th>-->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-if="f.contents.itens.length > 0" ng-repeat="item in f.contents.itens track by $index" >
+                      <td><input type="checkbox" ng-model="item.done" ng-change="checklist.done()" ></td>
+                      <td><span class="done-{{ item.done }}" editable-text="item.item" onaftersave="checklist.editItem($index)" >{{ item.item }}</span></td>
+                      <!-- <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.edit($index)" ><i class="glyphicon glyphicon-pencil"></i></button></td>
+                      <td><button type="button" class="btn btn-sm btn-info" data-ng-click="checklist.delete($index)" ><i class="glyphicon glyphicon-trash"></i></button></td> -->
+                      <td><span style="cursor: pointer" data-ng-click="checklist.edit($index)" ><i class="glyphicon glyphicon-pencil"></i></span></td>
+                      <td><span style="cursor: pointer" data-ng-click="checklist.delete($index)" ><i class="glyphicon glyphicon-trash"></i></span></td>
+                    </tr>
+                    <tr ng-if="f.contents.itens.length == 0" >
+                      <td colspan="4" >Nenhum item cadastrado!</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div ng-if="checklist.remaining() > 0">
+                <h2><i>Checklist itens</i><hr/></h2>
+                <p>{{ checklist.msg }}</p>
+                <ol>
+                  <li ng-repeat="item in f.contents.itens track by $index" class="checklist-{{ item.done }}" >
+                    <span>{{ item.item }}</span>
+                  </li>
+                </ol>
+                <p>Considerações:</p>
+                <textarea class="form-control" rows="2" ng-model="checklist.opcional" ></textarea>
+                <hr>
+                <button type="button" class="btn btn-sm btn-info" clip-copy="checklist.copy()" ><i class="glyphicon glyphicon-copy"></i>&nbsp;&nbsp;Copiar</button>
+              </div>
             </div>
           </div>
         </div>

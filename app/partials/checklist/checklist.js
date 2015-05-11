@@ -27,7 +27,9 @@ angular.module('app')
 .controller('ChecklistCtrl', ['$scope', '$modal', '$log', 'HttpChecklist', function($scope, $modal, $log, HttpChecklist) {
   var checklist = this;
   checklist.files = {};
-  checklist.msg   = 'Os seguintes itens encontram em descordo com o especificado.';
+
+  checklist.msg      = 'Os seguintes itens encontram em descordo.';
+  checklist.opcional = '';
 
   HttpChecklist.all().then(function(data) {
     checklist.files = data;
@@ -70,14 +72,16 @@ angular.module('app')
   };
 
   checklist.delete = function ( idx ) {
-    if (confirm("Deseja deletar esse item?")) {
-      checklist.files[0].contents.itens.splice(idx, 1);
-      commit();
-    }
+    checklist.files[0].contents.itens.splice(idx, 1);
+    commit();
   };
 
   checklist.edit = function (idx) {
     checklist.modal('edit', idx);
+  };
+
+  checklist.editItem = function (idx) {
+    checklist.addItem(checklist.files[0].contents.itens[idx].item, idx);
   };
 
   checklist.add = function () {
@@ -107,6 +111,8 @@ angular.module('app')
         ct++;
       }
     });
+    str += "\n" + 'Considerações: ';
+    str += "\n" + checklist.opcional;
     return str;
   };
 

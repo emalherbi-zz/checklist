@@ -35,6 +35,11 @@ angular.module('app')
       return $http.get('partials/home/home.php?m=delete&f='+file).then(function (response) {
         return response.data;
       });
+    },
+    save : function(file) {
+      return $http.post('partials/home/home.php?m=save', JSON.stringify(file)).then(function (response) {
+        return response.data;
+      });
     }
   };
 }])
@@ -64,18 +69,6 @@ angular.module('app')
     });
   };
 
-  home.edit = function(idx) {
-    console.log(home.files);
-
-    home.files[idx].contents.title = 'eduardo';
-
-    // HttpHome.use(file).then(function(data) {
-    //   if (data) {
-    //     $window.location.href = '#/checklist';
-    //   }
-    // });
-  };
-
   home.use = function(file) {
     HttpHome.use(file).then(function(data) {
       if (data) {
@@ -87,7 +80,7 @@ angular.module('app')
   home.duplicate = function(file) {
     HttpHome.duplicate(file).then(function(data) {
       if (data) {
-        $window.location.href = '#/checklist';
+        $window.location.href = '#/';
       }
     });
   };
@@ -96,6 +89,14 @@ angular.module('app')
     HttpHome.delete(file).then(function(data) {
       if (data) {
         $window.location.href = '#/';
+      }
+    });
+  };
+
+  home.save = function(idx) {
+    HttpHome.save(home.files[idx]).then(function(data) {
+      if (data) {
+        $log.info('Salvou');
       }
     });
   };

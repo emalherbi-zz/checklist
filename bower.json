@@ -9,7 +9,8 @@
     "html5-boilerplate": "~4.3.0",
     "zeroclipboard": "~2.2.0",
     "ng-clip": "~0.2.6",
-    "angular-xeditable": "~0.1.9"
+    "angular-xeditable": "~0.1.9",
+    "components-font-awesome": "~4.3.0"
   },
   "exportsOverride": {
     "html5-boilerplate": {
@@ -26,9 +27,16 @@
       "js": "**/ZeroClipboard.min.js",
       "swf": "**/ZeroClipboard.swf"
     },
-    "xeditable": {
+    "angular-xeditable": {
       "css": "**/xeditable.css",
       "js": "**/xeditable.js"
+    },
+    "components-font-awesome": {
+      "css": "**/font-awesome.min.css",
+      "fonts" : [
+        "**/fontawesome-webfont.woff",
+        "**/fontawesome-webfont.ttf"
+      ]
     }
   }
 }

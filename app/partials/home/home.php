@@ -144,4 +144,20 @@ if (isset($_GET) && ($_GET['m'] == 'all')) {
     echo false;
   }
 
+} else if (isset($_GET) && ($_GET['m'] == 'save')) {
+
+  try {
+    $files = json_decode(file_get_contents("php://input"));
+    $file  = $files->file;
+
+    $filepath = "{$path}/{$file}";
+    $f = fopen("{$filepath}", "w");
+    fwrite($f, json_encode($files->contents));
+    fclose($f);
+
+    echo true;
+  } catch (Exception $e) {
+    echo false;
+  }
+
 }
