@@ -28,7 +28,8 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           dot: true,
-          src: ['<%= properties.app %>/**'],
+          cwd: '<%= properties.app %>',
+          src: '**/**',
           dest: '<%= properties.dist %>'
         }]
       }
@@ -37,12 +38,17 @@ module.exports = function(grunt) {
     /* js file minification */
     uglify: {
       options: {
-        preserveComments: false
+        beatiful: true,
+        preserveComments: false,
+        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'
       },
       build: {
-        files: {
-          '<%= properties.dist %>': ['<%= properties.dist %>/*.js'],
-        }
+        files: [{
+          expand: true,
+          cwd: '<%= properties.dist %>',
+          src: '**/*.js',
+          dest: '<%= properties.dist %>'
+        }]
       }
     }
 
@@ -58,8 +64,8 @@ module.exports = function(grunt) {
 	// tasks
   grunt.registerTask('deploy', [
     'clean',
-    'copy'//,
-    //'uglify'
+    'copy',
+    'uglify'
   ]);
 
   grunt.registerTask('default', [
