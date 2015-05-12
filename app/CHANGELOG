@@ -1,2 +1,5 @@
 v.1.0.0 - start project.
 v.2.0.0 - add grunt deploy.
+v.2.0.1 - agora ao duplicar o arquivo os campos done estão falso.
+v.2.0.2 - ordenação da lista do checklist para ordem alfabetica e do home tmb.
+v.2.0.3 - na opção do checklist agora é possivel marcar e desmarcar todos os itens da grid.

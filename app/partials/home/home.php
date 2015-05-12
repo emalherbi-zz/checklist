@@ -119,10 +119,16 @@ if (isset($_GET) && ($_GET['m'] == 'all')) {
       closedir($handle);
     }
 
-    $name = $_GET['f'];
+    $name  = $_GET['f'];
+    $title = $_GET['t'];
+
     $contents = file_get_contents("{$path}/$name");
     $contents = json_decode($contents);
+    $contents->title = $title;
     $contents->use = "true";
+    foreach($contents->itens as $key => $values) {
+      $values->done = false;
+    }
     $contents = json_encode($contents);
 
     $nameFile = date('Y_m_d_H_i_s') . "_" . rand();

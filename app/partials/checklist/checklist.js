@@ -61,7 +61,7 @@ angular.module('app')
     commit();
   };
 
-  checklist.delete = function ( idx ) {
+  checklist.delete = function (idx) {
     checklist.files[0].contents.itens.splice(idx, 1);
     commit();
   };
@@ -78,6 +78,13 @@ angular.module('app')
     commit();
   };
 
+  checklist.doneAll = function () {
+    checklist.isDoneAll = !checklist.isDoneAll;
+    angular.forEach(checklist.files[0].contents.itens, function(itens) {
+      itens.done = checklist.isDoneAll;
+    });
+  };
+
   checklist.remaining = function() {
     var count = 0;
     angular.forEach(checklist.files[0].contents.itens, function(itens) {
@@ -87,14 +94,12 @@ angular.module('app')
   };
 
   checklist.copy = function() {
-    var str = '';
-    var ct  = 1;
-
-    str += checklist.msg + "\n\n";
+    var count = 1;
+    var str = checklist.msg + "\n\n";
     angular.forEach(checklist.files[0].contents.itens, function(itens) {
       if (!itens.done) {
-        str += ct + ". " + itens.item + "\n";
-        ct++;
+        str += count + ". " + itens.item + "\n";
+        count++;
       }
     });
     return str;
