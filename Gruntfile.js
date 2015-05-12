@@ -5,10 +5,11 @@ module.exports = function(grunt) {
 	  pkg: grunt.file.readJSON('package.json'),
     properties: grunt.file.readJSON('properties.json'),
 
+    /* install bower */
     bower: {
       install: {
         options: {
-          targetDir: './app/lib',
+          targetDir: '<%= properties.app %>/lib',
           layout: 'byComponent',
           install: true,
           verbose: false,
@@ -28,7 +29,8 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           dot: true,
-          src: ['<%= properties.app %>/**'],
+          cwd: '<%= properties.app %>',
+          src: '**/**',
           dest: '<%= properties.dist %>'
         }]
       }
@@ -37,12 +39,58 @@ module.exports = function(grunt) {
     /* js file minification */
     uglify: {
       options: {
-        preserveComments: false
+        mangle: false, /* for angular js */
+        preserveComments: false,
+        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - '
+          + '<%= grunt.template.today("yyyy-mm-dd") %> */'
       },
       build: {
-        files: {
-          '<%= properties.dist %>': ['<%= properties.dist %>/*.js'],
-        }
+        files: [{
+          expand: true,
+          cwd: '<%= properties.dist %>',
+          src: ['**/*.js', '!**/*.min.js'],
+          dest: '<%= properties.dist %>'
+        }]
+      }
+    },
+
+    /* css minification */
+    cssmin: {
+      target: {
+        files: [{
+          expand: true,
+          cwd: '<%= properties.dist %>',
+          src: ['**/*.css', '!**/*.min.css'],
+          dest: '<%= properties.dist %>'
+        }]
+      }
+    },
+
+    replace: {
+      'version-inno': {
+        options: {
+          patterns: [{
+            match: 'version',
+            replacement: '<%= pkg.version %>'
+          }]
+        },
+        files: [{
+          expand: true,
+          flatten: true,
+          cwd: '.',
+          dest: 'releases',
+          src: ['releases.iss']
+        }]
+      }
+    },
+
+    "innosetup_compiler": {
+      your_target: {
+        options: {
+          gui: false,
+          verbose: false
+        },
+        script: "releases/releases.iss"
       }
     }
 
@@ -54,12 +102,16 @@ module.exports = function(grunt) {
       grunt.loadNpmTasks(key);
     }
   }
+  grunt.loadNpmTasks('innosetup-compiler');
 
 	// tasks
   grunt.registerTask('deploy', [
     'clean',
-    'copy'//,
-    //'uglify'
+    'copy',
+    'uglify',
+    'cssmin',
+    'replace',
+    'innosetup_compiler'
   ]);
 
   grunt.registerTask('default', [

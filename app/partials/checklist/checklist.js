@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
+angular.module('app')
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/checklist', {
@@ -27,7 +27,7 @@ angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 .controller('ChecklistCtrl', ['$scope', '$modal', '$log', 'HttpChecklist', function($scope, $modal, $log, HttpChecklist) {
   var checklist = this;
   checklist.files = {};
-  checklist.msg   = 'Os seguintes itens encontram em descordo com o especificado.';
+  checklist.msg   = '';
 
   HttpChecklist.all().then(function(data) {
     checklist.files = data;
@@ -42,19 +42,11 @@ angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
   checklist.modal = function (type, idx) {
     var modalInstance = $modal.open({
       templateUrl: 'ModalChecklist.html',
-      controller: 'ModalChecklistCtrl',
-      resolve : {
-        title : function() {
-          return (type === 'add') ? 'Novo' : 'Editar';
-        },
-        placeholder : function() {
-          return (type === 'add') ? 'Informe aqui o novo item!' : checklist.files[0].contents.itens[idx].item;
-        }
-      }
+      controller: 'ModalChecklistCtrl'
     });
 
     modalInstance.result.then(function(item) {
-      (type === 'add') ? checklist.addItem(item) : checklist.addItem(item, idx);
+      checklist.addItem(item);
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
@@ -70,14 +62,12 @@ angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
   };
 
   checklist.delete = function ( idx ) {
-    if (confirm("Deseja deletar esse item?")) {
-      checklist.files[0].contents.itens.splice(idx, 1);
-      commit();
-    }
+    checklist.files[0].contents.itens.splice(idx, 1);
+    commit();
   };
 
   checklist.edit = function (idx) {
-    checklist.modal('edit', idx);
+    checklist.addItem(checklist.files[0].contents.itens[idx].item, idx);
   };
 
   checklist.add = function () {
@@ -112,10 +102,8 @@ angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 
 }])
 
-.controller('ModalChecklistCtrl', function ($scope, $modalInstance, title, placeholder) {
+.controller('ModalChecklistCtrl', function ($scope, $modalInstance) {
 
-  $scope.title  = title;
-  $scope.placeholder = placeholder;
   $scope.item = '';
   $scope.help = '';
 
@@ -134,5 +122,5 @@ angular.module('app.checklist', ['ngRoute', 'ui.bootstrap', 'ngClipboard'])
 })
 
 .config(['ngClipProvider', function(ngClipProvider) {
-  ngClipProvider.setPath("bower_components/zeroclipboard/dist/ZeroClipboard.swf");
+  ngClipProvider.setPath("lib/zeroclipboard/swf/ZeroClipboard.swf");
 }]);

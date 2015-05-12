@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app.home', ['ngRoute', 'ui.bootstrap'])
+angular.module('app')
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/home', {
@@ -33,6 +33,11 @@ angular.module('app.home', ['ngRoute', 'ui.bootstrap'])
     },
     delete : function(file) {
       return $http.get('partials/home/home.php?m=delete&f='+file).then(function (response) {
+        return response.data;
+      });
+    },
+    save : function(file) {
+      return $http.post('partials/home/home.php?m=save', JSON.stringify(file)).then(function (response) {
         return response.data;
       });
     }
@@ -75,7 +80,7 @@ angular.module('app.home', ['ngRoute', 'ui.bootstrap'])
   home.duplicate = function(file) {
     HttpHome.duplicate(file).then(function(data) {
       if (data) {
-        $window.location.href = '#/checklist';
+        $window.location.href = '#/';
       }
     });
   };
@@ -84,6 +89,14 @@ angular.module('app.home', ['ngRoute', 'ui.bootstrap'])
     HttpHome.delete(file).then(function(data) {
       if (data) {
         $window.location.href = '#/';
+      }
+    });
+  };
+
+  home.save = function(idx) {
+    HttpHome.save(home.files[idx]).then(function(data) {
+      if (data) {
+        $log.info('Salvou');
       }
     });
   };
