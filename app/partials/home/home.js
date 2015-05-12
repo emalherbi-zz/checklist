@@ -26,8 +26,8 @@ angular.module('app')
         return response.data;
       });
     },
-    duplicate : function(file) {
-      return $http.get('partials/home/home.php?m=duplicate&f='+file).then(function (response) {
+    duplicate : function(file, title) {
+      return $http.get('partials/home/home.php?m=duplicate&f='+file+'&t='+title).then(function (response) {
         return response.data;
       });
     },
@@ -52,22 +52,31 @@ angular.module('app')
     home.files = data;
   });
 
-  home.create = function() {
+  home.modal = function() {
     var modalInstance = $modal.open({
       templateUrl: 'ModalHome.html',
       controller: 'ModalHomeCtrl'
     });
 
-    modalInstance.result.then(function(title) {
-      HttpHome.create(title).then(function(data) {
-        if (data) {
-          $window.location.href = '#/checklist';
-        }
-      });
+    return modalInstance.result.then(function(title) {
+      return title;
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
+      return false;
     });
   };
+
+  home.create = function() {
+    home.modal().then(function(title) {
+      if (typeof title === 'string') {
+        HttpHome.create(title).then(function(data) {
+          if (data) {
+            $window.location.href = '#/checklist';
+          }
+        });
+      }
+    });
+  }
 
   home.use = function(file) {
     HttpHome.use(file).then(function(data) {
@@ -78,9 +87,13 @@ angular.module('app')
   };
 
   home.duplicate = function(file) {
-    HttpHome.duplicate(file).then(function(data) {
-      if (data) {
-        $window.location.href = '#/';
+    home.modal().then(function(title) {
+      if (typeof title === 'string') {
+        HttpHome.duplicate(file, title).then(function(data) {
+          if (data) {
+            $window.location.href = '#/';
+          }
+        });
       }
     });
   };
