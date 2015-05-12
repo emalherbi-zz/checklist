@@ -27,9 +27,7 @@ angular.module('app')
 .controller('ChecklistCtrl', ['$scope', '$modal', '$log', 'HttpChecklist', function($scope, $modal, $log, HttpChecklist) {
   var checklist = this;
   checklist.files = {};
-
-  checklist.msg      = 'Os seguintes itens encontram em descordo.';
-  checklist.opcional = '';
+  checklist.msg   = '';
 
   HttpChecklist.all().then(function(data) {
     checklist.files = data;
@@ -44,19 +42,11 @@ angular.module('app')
   checklist.modal = function (type, idx) {
     var modalInstance = $modal.open({
       templateUrl: 'ModalChecklist.html',
-      controller: 'ModalChecklistCtrl',
-      resolve : {
-        title : function() {
-          return (type === 'add') ? 'Novo' : 'Editar';
-        },
-        placeholder : function() {
-          return (type === 'add') ? 'Informe aqui o novo item!' : checklist.files[0].contents.itens[idx].item;
-        }
-      }
+      controller: 'ModalChecklistCtrl'
     });
 
     modalInstance.result.then(function(item) {
-      (type === 'add') ? checklist.addItem(item) : checklist.addItem(item, idx);
+      checklist.addItem(item);
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
@@ -77,10 +67,6 @@ angular.module('app')
   };
 
   checklist.edit = function (idx) {
-    checklist.modal('edit', idx);
-  };
-
-  checklist.editItem = function (idx) {
     checklist.addItem(checklist.files[0].contents.itens[idx].item, idx);
   };
 
@@ -111,17 +97,13 @@ angular.module('app')
         ct++;
       }
     });
-    str += "\n" + 'Considerações: ';
-    str += "\n" + checklist.opcional;
     return str;
   };
 
 }])
 
-.controller('ModalChecklistCtrl', function ($scope, $modalInstance, title, placeholder) {
+.controller('ModalChecklistCtrl', function ($scope, $modalInstance) {
 
-  $scope.title  = title;
-  $scope.placeholder = placeholder;
   $scope.item = '';
   $scope.help = '';
 

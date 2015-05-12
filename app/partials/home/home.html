@@ -24,7 +24,7 @@
                     <td class="text-center" ><h4 editable-text="f.contents.title" onaftersave="home.save($index)" >{{ f.contents.title || 'Não Informado' }}</h4></td>
                     <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="isShow = !isShow" ><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Detalhes</button></td>
                     <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.use(f.file)" ><i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;Usar</button></td>
-                    <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.duplicate(f.file)" ><i class="glyphicon glyphicon-file"></i>&nbsp;&nbsp;Duplicar</button></td>
+                    <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-info" data-ng-click="home.duplicate(f.file)" ><i class="fa fa-files-o"></i>&nbsp;&nbsp;Duplicar</button></td>
                     <td class="text-center" width="5%" ><button type="button" class="btn btn-sm btn-danger" data-ng-click="home.delete(f.file)" ><i class="glyphicon glyphicon-trash"></i></button></td>
                   </tr>
                   <tr ng-if="f.contents.itens.length > 0" ng-show="isShow" >

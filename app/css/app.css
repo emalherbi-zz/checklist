@@ -55,3 +55,8 @@
   font-style: italic;
   text-decoration: none;
 }
+
+/* table */
+table {
+  cursor: pointer;
+}

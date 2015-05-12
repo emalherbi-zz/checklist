@@ -10,7 +10,9 @@
     "zeroclipboard": "~2.2.0",
     "ng-clip": "~0.2.6",
     "angular-xeditable": "~0.1.9",
-    "components-font-awesome": "~4.3.0"
+    "components-font-awesome": "~4.3.0",
+    "bootstrap": "3.1.1",
+    "bootswatch-dist": "flatly"
   },
   "exportsOverride": {
     "html5-boilerplate": {
@@ -36,6 +38,20 @@
       "fonts": [
         "**/fontawesome-webfont.woff",
         "**/fontawesome-webfont.ttf"
+      ]
+    },
+    "bootstrap": {
+      "css": "**/bootstrap.css",
+      "fonts": [
+        "**/**.woff",
+        "**/**.ttf"
+      ]
+    },
+    "bootswatch-dist": {
+      "css": "**/bootstrap.css",
+      "fonts": [
+        "**/**.woff",
+        "**/**.ttf"
       ]
     }
   }
