@@ -5,10 +5,11 @@ module.exports = function(grunt) {
 	  pkg: grunt.file.readJSON('package.json'),
     properties: grunt.file.readJSON('properties.json'),
 
+    /* install bower */
     bower: {
       install: {
         options: {
-          targetDir: './app/lib',
+          targetDir: '<%= properties.app %>/lib',
           layout: 'byComponent',
           install: true,
           verbose: false,
@@ -38,15 +39,28 @@ module.exports = function(grunt) {
     /* js file minification */
     uglify: {
       options: {
-        beatiful: true,
+        mangle: false, /* for angular js */
         preserveComments: false,
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'
+        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - '
+          + '<%= grunt.template.today("yyyy-mm-dd") %> */'
       },
       build: {
         files: [{
           expand: true,
           cwd: '<%= properties.dist %>',
-          src: '**/*.js',
+          src: ['**/*.js', '!**/*.min.js'],
+          dest: '<%= properties.dist %>'
+        }]
+      }
+    },
+
+    /* css minification */
+    cssmin: {
+      target: {
+        files: [{
+          expand: true,
+          cwd: '<%= properties.dist %>',
+          src: ['**/*.css', '!**/*.min.css'],
           dest: '<%= properties.dist %>'
         }]
       }
@@ -65,7 +79,8 @@ module.exports = function(grunt) {
   grunt.registerTask('deploy', [
     'clean',
     'copy',
-    'uglify'
+    'uglify',
+    'cssmin'
   ]);
 
   grunt.registerTask('default', [
