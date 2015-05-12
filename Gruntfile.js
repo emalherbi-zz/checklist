@@ -64,6 +64,34 @@ module.exports = function(grunt) {
           dest: '<%= properties.dist %>'
         }]
       }
+    },
+
+    replace: {
+      'version-inno': {
+        options: {
+          patterns: [{
+            match: 'version',
+            replacement: '<%= pkg.version %>'
+          }]
+        },
+        files: [{
+          expand: true,
+          flatten: true,
+          cwd: '.',
+          dest: 'releases',
+          src: ['releases.iss']
+        }]
+      }
+    },
+
+    "innosetup_compiler": {
+      your_target: {
+        options: {
+          gui: false,
+          verbose: false
+        },
+        script: "releases/releases.iss"
+      }
     }
 
 	});
@@ -74,13 +102,16 @@ module.exports = function(grunt) {
       grunt.loadNpmTasks(key);
     }
   }
+  grunt.loadNpmTasks('innosetup-compiler');
 
 	// tasks
   grunt.registerTask('deploy', [
     'clean',
     'copy',
     'uglify',
-    'cssmin'
+    'cssmin',
+    'replace',
+    'innosetup_compiler'
   ]);
 
   grunt.registerTask('default', [
